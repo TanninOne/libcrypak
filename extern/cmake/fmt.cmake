@@ -18,8 +18,6 @@ ExternalProject_Add(
   CMAKE_ARGS        ${CMAKE_ARGS}
   INSTALL_COMMAND   ""
   TEST_COMMAND      ""
-  LOG_DOWNLOAD      1
-  LOG_BUILD         1
 )
 
 ExternalProject_Get_Property(fmt_project source_dir)

@@ -8,7 +8,6 @@ else (WIN32)
   set(MAKEFILE makefile)
 endif (WIN32)
 
-# /p:OutputPath=${GLOBAL_OUTPUT_PATH}/tomcrypt/ /p:OutDir=${GLOBAL_OUTPUT_PATH}/tomcrypt/
 ExternalProject_Add(
   libtommath_project
   GIT_REPOSITORY    https://github.com/libtom/libtommath.git
@@ -20,7 +19,6 @@ ExternalProject_Add(
   BUILD_COMMAND     ${MAKE} /f ${MAKEFILE}
   BUILD_IN_SOURCE   1
   INSTALL_COMMAND   ""
-  LOG_BUILD         1
 )
 
 ExternalProject_Get_Property(libtommath_project source_dir)
