@@ -7,3 +7,19 @@ This library handles decryption, either decrypting the entire file, generating a
 It does not do decompression so everything you get out of this library is still zip compressed.
 
 The decryption key is different between games and may be changed between updates, it is not provided in this repository.
+
+# Building
+
+- clone this repository
+- cd into your clone
+- mkdir build && cd build
+- cmake .. [-G <pick a generator>]
+- cmake --build . [--config Release]
+
+# Acknowledgments
+
+This is built using a couple of libraries, thanks go out to their developers and maintainers:
+
+- libtomcrypt (https://github.com/libtom/libtomcrypt/)
+- libtommath (https://github.com/libtom/libtommath/)
+- The {fmt} library (https://github.com/fmtlib/fmt)
