@@ -1,9 +1,0 @@
-[submodule "extern\\fmt"]
-	path = extern\\fmt
-	url = https://github.com/fmtlib/fmt
-[submodule "extern/libtomcrypt"]
-	path = extern/libtomcrypt
-	url = https://github.com/libtom/libtomcrypt
-[submodule "extern/libtommath"]
-	path = extern/libtommath
-	url = https://github.com/libtom/libtommath
