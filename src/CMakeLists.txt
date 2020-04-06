@@ -33,7 +33,7 @@ target_link_directories(libcrypak PUBLIC
 
 target_link_libraries(libcrypak fmt.lib tommath.lib tomcrypt.lib)
 
-install(TARGETS libcryxml
+install(TARGETS libcrypak
         RUNTIME DESTINATION ${CMAKE_SOURCE_DIR}/dist
         ARCHIVE DESTINATION ${CMAKE_SOURCE_DIR}/dist
         LIBRARY DESTINATION ${CMAKE_SOURCE_DIR}/dist
