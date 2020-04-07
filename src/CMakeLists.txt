@@ -17,6 +17,7 @@ target_compile_definitions(libcrypak PUBLIC -DBUILD_DLL -DLTM_DESC)
 set_property(TARGET libcrypak PROPERTY
   MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
+add_dependencies(libtomcrypt_project libtommath_project)
 add_dependencies(libcrypak fmt_project libtommath_project libtomcrypt_project)
 
 target_include_directories(libcrypak PUBLIC
