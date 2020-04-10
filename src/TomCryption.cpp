@@ -28,7 +28,7 @@ public:
 
   TomCryptionImpl();
 
-  void loadKeys(const char *fileName);
+  void loadKeys(const char *key, short keySize);
   std::vector<uint8_t> decryptKey(const uint8_t *input, unsigned long size, int padding);
   void decryptData(uint8_t *buffer, unsigned long bufferSize, CipherKey key, InitialVector iv) const;
   void decryptFileSection(std::istream &input, std::ostream &output, unsigned long size, CipherKey key, InitialVector iv, bool isData) const;
@@ -61,8 +61,8 @@ TomCryption::~TomCryption() {
   delete m_Impl;
 }
 
-void TomCryption::loadKeys(const char *fileName) {
-  m_Impl->loadKeys(fileName);
+void TomCryption::loadKeys(const char *key, short keySize) {
+  m_Impl->loadKeys(key, keySize);
 }
 
 std::vector<uint8_t> TomCryption::decryptKey(const uint8_t *input, unsigned long size, int padding) {
@@ -122,22 +122,9 @@ int TomCryptionImpl::registerPRNG(const ltc_prng_descriptor &descriptor) {
   return res;
 }
 
-void TomCryptionImpl::loadKeys(const char *fileName) {
-  std::ifstream file;
-  file.open(fileName, std::ios::binary | std::ios::in);
-  if (!file.is_open()) {
-    throw std::runtime_error("failed to open key file");
-  }
-
-  file.seekg(0, std::ios::end);
-  unsigned long pubLength = static_cast<unsigned long>(file.tellg());
-  file.seekg(0);
-
-  if ((pubLength > 0) && (pubLength <= PUBLIC_KEY_SIZE)) {
-    file.read(reinterpret_cast<char*>(m_PublicKeyData), pubLength);
-  }
-
-  checked(rsa_import(m_PublicKeyData, pubLength, &m_PublicKey), "Invalid public key (error: {1})");
+void TomCryptionImpl::loadKeys(const char *key, short keySize) {
+  memcpy(m_PublicKeyData, key, keySize);
+  checked(rsa_import(m_PublicKeyData, keySize, &m_PublicKey), "Invalid public key (error: {1})");
 }
 
 void TomCryptionImpl::decryptData(uint8_t *buffer, unsigned long bufferSize, CipherKey key, InitialVector iv) const {

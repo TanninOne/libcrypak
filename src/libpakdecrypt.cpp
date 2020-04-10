@@ -58,7 +58,7 @@ struct __Padding {
   char buffer[PADDING_BUFFER_SIZE];
 } s_Padding;
 
-void decryptImpl(const char *encryptedPath, const char *outputPath, const char *keyPath) {
+void decryptImpl(const char *encryptedPath, const char *outputPath, const char *key, short keySize) {
   // the process to decrypt cryengine pak files is as follows:
   // a) find the end record of the CDR.
   //    -> This record is not encrypted and is followed by a comment section that the cryengine uses to store
@@ -77,7 +77,7 @@ void decryptImpl(const char *encryptedPath, const char *outputPath, const char *
   }
 
   TomCryption crypto;
-  checked<void>([&]() { crypto.loadKeys(keyPath); }, ERROR_READ_KEY_FAILED);
+  checked<void>([&]() { crypto.loadKeys(key, keySize); }, ERROR_READ_KEY_FAILED);
 
   CDREndRecord cdrEndRecord = checked<CDREndRecord>([&]() { return CDREndRecord::from(input); }, ERROR_CDR_NOT_FOUND);
 
@@ -138,7 +138,7 @@ void decryptImpl(const char *encryptedPath, const char *outputPath, const char *
   output.write(reinterpret_cast<const char*>(&cdrEndRecord), sizeof(CDREndRecord));
 }
 
-void decryptFilesImpl(const char *encryptedPath, const char *keyPath, const char **files, int numFiles, char ***buffers, int **bufferSizes) {
+void decryptFilesImpl(const char *encryptedPath, const char *key, short keySize, const char **files, int numFiles, char ***buffers, int **bufferSizes) {
   std::ifstream input;
   input.open(encryptedPath, std::ios::binary | std::ios::in);
 
@@ -147,7 +147,7 @@ void decryptFilesImpl(const char *encryptedPath, const char *keyPath, const char
   }
 
   TomCryption crypto;
-  checked<void>([&]() { crypto.loadKeys(keyPath); }, ERROR_READ_KEY_FAILED);
+  checked<void>([&]() { crypto.loadKeys(key, keySize); }, ERROR_READ_KEY_FAILED);
 
   CDREndRecord cdrEndRecord = checked<CDREndRecord>([&]() { return CDREndRecord::from(input); }, ERROR_CDR_NOT_FOUND);
 
@@ -207,7 +207,7 @@ void decryptFilesImpl(const char *encryptedPath, const char *keyPath, const char
 }
 
 
-void listFilesImpl(const char *encryptedPath, const char *keyPath, char **fileNames) {
+void listFilesImpl(const char *encryptedPath, const char *key, short keySize, char **fileNames) {
   std::ifstream input;
   input.open(encryptedPath, std::ios::binary | std::ios::in);
 
@@ -216,7 +216,7 @@ void listFilesImpl(const char *encryptedPath, const char *keyPath, char **fileNa
   }
 
   TomCryption crypto;
-  checked<void>([&]() { crypto.loadKeys(keyPath); }, ERROR_READ_KEY_FAILED);
+  checked<void>([&]() { crypto.loadKeys(key, keySize); }, ERROR_READ_KEY_FAILED);
 
   CDREndRecord cdrEndRecord = checked<CDREndRecord>([&]() { return CDREndRecord::from(input); }, ERROR_CDR_NOT_FOUND);
 
@@ -247,9 +247,9 @@ void listFilesImpl(const char *encryptedPath, const char *keyPath, char **fileNa
   }
 }
 
-DLLEXPORT int pak_decrypt(const char *encryptedPath, const char *outputPath, const char *keyPath) {
+DLLEXPORT int pak_decrypt(const char *encryptedPath, const char *outputPath, const char *key, short keySize) {
   try {
-    decryptImpl(encryptedPath, outputPath, keyPath);
+    decryptImpl(encryptedPath, outputPath, key, keySize);
     return ERROR_NONE;
   }
   catch (const ErrorCodeException &e) {
@@ -260,9 +260,9 @@ DLLEXPORT int pak_decrypt(const char *encryptedPath, const char *outputPath, con
   }
 }
 
-DLLEXPORT int pak_list_files(const char *encryptedPath, const char *keyPath, char **fileNames) {
+DLLEXPORT int pak_list_files(const char *encryptedPath, const char *key, short keySize, char **fileNames) {
   try {
-    listFilesImpl(encryptedPath, keyPath, fileNames);
+    listFilesImpl(encryptedPath, key, keySize, fileNames);
     return ERROR_NONE;
   }
   catch (const ErrorCodeException &e) {
@@ -273,10 +273,10 @@ DLLEXPORT int pak_list_files(const char *encryptedPath, const char *keyPath, cha
   }
 }
 
-DLLEXPORT int pak_decrypt_files(const char *encryptedPath, const char *keyPath, const char **files, int numFiles,
+DLLEXPORT int pak_decrypt_files(const char *encryptedPath, const char *key, short keySize, const char **files, int numFiles,
                                 char ***buffers, int **bufferSizes) {
   try {
-    decryptFilesImpl(encryptedPath, keyPath, files, numFiles, buffers, bufferSizes);
+    decryptFilesImpl(encryptedPath, key, keySize, files, numFiles, buffers, bufferSizes);
     return ERROR_NONE;
   }
   catch (const ErrorCodeException &e) {

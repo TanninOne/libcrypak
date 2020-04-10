@@ -7,10 +7,11 @@ include(${PROJECT_SOURCE_DIR}/extern/cmake/libtommath.cmake)
 include(${PROJECT_SOURCE_DIR}/extern/cmake/libtomcrypt.cmake)
 
 set(SOURCES dllmain.cpp libpakdecrypt.cpp TomCryption.cpp ZipUtil.cpp)
+set(HEADERS libpakdecrypt.h TomCryption.h ZipUtil.h errors.h dll.h)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-add_library(libcrypak SHARED ${SOURCES})
+add_library(libcrypak SHARED ${SOURCES} ${HEADERS})
 
 target_compile_definitions(libcrypak PUBLIC -DBUILD_DLL -DLTM_DESC)
 
