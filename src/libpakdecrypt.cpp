@@ -58,7 +58,7 @@ struct __Padding {
   char buffer[PADDING_BUFFER_SIZE];
 } s_Padding;
 
-void decryptImpl(const char *encryptedPath, const char *outputPath, const char *key, short keySize) {
+void decryptImpl(const char *encryptedPath, const char *outputPath, const unsigned char *key, short keySize) {
   // the process to decrypt cryengine pak files is as follows:
   // a) find the end record of the CDR.
   //    -> This record is not encrypted and is followed by a comment section that the cryengine uses to store
@@ -138,7 +138,7 @@ void decryptImpl(const char *encryptedPath, const char *outputPath, const char *
   output.write(reinterpret_cast<const char*>(&cdrEndRecord), sizeof(CDREndRecord));
 }
 
-void decryptFilesImpl(const char *encryptedPath, const char *key, short keySize, const char **files, int numFiles, char ***buffers, int **bufferSizes) {
+void decryptFilesImpl(const char *encryptedPath, const unsigned char *key, short keySize, const char **files, int numFiles, char ***buffers, int **bufferSizes) {
   std::ifstream input;
   input.open(encryptedPath, std::ios::binary | std::ios::in);
 
@@ -207,7 +207,7 @@ void decryptFilesImpl(const char *encryptedPath, const char *key, short keySize,
 }
 
 
-void listFilesImpl(const char *encryptedPath, const char *key, short keySize, char **fileNames) {
+void listFilesImpl(const char *encryptedPath, const unsigned char *key, short keySize, char **fileNames) {
   std::ifstream input;
   input.open(encryptedPath, std::ios::binary | std::ios::in);
 
@@ -247,7 +247,7 @@ void listFilesImpl(const char *encryptedPath, const char *key, short keySize, ch
   }
 }
 
-DLLEXPORT int pak_decrypt(const char *encryptedPath, const char *outputPath, const char *key, short keySize) {
+DLLEXPORT int pak_decrypt(const char *encryptedPath, const char *outputPath, const unsigned char *key, short keySize) {
   try {
     decryptImpl(encryptedPath, outputPath, key, keySize);
     return ERROR_NONE;
@@ -260,7 +260,7 @@ DLLEXPORT int pak_decrypt(const char *encryptedPath, const char *outputPath, con
   }
 }
 
-DLLEXPORT int pak_list_files(const char *encryptedPath, const char *key, short keySize, char **fileNames) {
+DLLEXPORT int pak_list_files(const char *encryptedPath, const unsigned char *key, short keySize, char **fileNames) {
   try {
     listFilesImpl(encryptedPath, key, keySize, fileNames);
     return ERROR_NONE;
@@ -273,7 +273,7 @@ DLLEXPORT int pak_list_files(const char *encryptedPath, const char *key, short k
   }
 }
 
-DLLEXPORT int pak_decrypt_files(const char *encryptedPath, const char *key, short keySize, const char **files, int numFiles,
+DLLEXPORT int pak_decrypt_files(const char *encryptedPath, const unsigned char *key, short keySize, const char **files, int numFiles,
                                 char ***buffers, int **bufferSizes) {
   try {
     decryptFilesImpl(encryptedPath, key, keySize, files, numFiles, buffers, bufferSizes);
@@ -312,7 +312,7 @@ DLLEXPORT const char *pak_error_to_string(int code) {
   case ERROR_FILE_NOT_FOUND: return "File not found";
   case ERROR_CDR_NOT_FOUND: return "CDR not found";
   case ERROR_DECRYPTION_FAILED: return "Decryption failed";
-  case ERROR_READ_KEY_FAILED: return "Failed to read key file";
+  case ERROR_READ_KEY_FAILED: return "Invalid key";
   default: return "Unknown error";
   }
 }

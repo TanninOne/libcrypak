@@ -28,7 +28,7 @@ public:
 
   TomCryptionImpl();
 
-  void loadKeys(const char *key, short keySize);
+  void loadKeys(const unsigned char *key, short keySize);
   std::vector<uint8_t> decryptKey(const uint8_t *input, unsigned long size, int padding);
   void decryptData(uint8_t *buffer, unsigned long bufferSize, CipherKey key, InitialVector iv) const;
   void decryptFileSection(std::istream &input, std::ostream &output, unsigned long size, CipherKey key, InitialVector iv, bool isData) const;
@@ -61,7 +61,7 @@ TomCryption::~TomCryption() {
   delete m_Impl;
 }
 
-void TomCryption::loadKeys(const char *key, short keySize) {
+void TomCryption::loadKeys(const unsigned char *key, short keySize) {
   m_Impl->loadKeys(key, keySize);
 }
 
@@ -122,7 +122,7 @@ int TomCryptionImpl::registerPRNG(const ltc_prng_descriptor &descriptor) {
   return res;
 }
 
-void TomCryptionImpl::loadKeys(const char *key, short keySize) {
+void TomCryptionImpl::loadKeys(const unsigned char *key, short keySize) {
   memcpy(m_PublicKeyData, key, keySize);
   checked(rsa_import(m_PublicKeyData, keySize, &m_PublicKey), "Invalid public key (error: {1})");
 }

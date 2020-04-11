@@ -41,7 +41,7 @@ public:
   TomCryption();
   ~TomCryption();
 
-  void loadKeys(const char *key, short keySize);
+  void loadKeys(const unsigned char *key, short keySize);
 
   std::vector<uint8_t> decryptKey(const uint8_t *input, unsigned long size, int padding);
   void decryptData(uint8_t *buffer, unsigned long bufferSize, CipherKey key, InitialVector iv) const;
